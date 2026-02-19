@@ -1105,6 +1105,7 @@ mod tests {
             tool_choice: None,
             thinking_allowed: true,
             thinking_effort: None,
+            speed: None,
         };
 
         let anthropic_request = into_anthropic(
@@ -1167,6 +1168,7 @@ mod tests {
             tools: vec![],
             tool_choice: None,
             thinking_allowed: true,
+            speed: None,
         };
         request.messages.push(LanguageModelRequestMessage {
             role: Role::Assistant,
