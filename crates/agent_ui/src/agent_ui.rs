@@ -148,6 +148,8 @@ actions!(
         CycleThinkingEffort,
         /// Toggles the thinking effort selector menu open or closed.
         ToggleThinkingEffortMenu,
+        /// Toggles fast mode for models that support it.
+        ToggleFastMode,
     ]
 );
 
