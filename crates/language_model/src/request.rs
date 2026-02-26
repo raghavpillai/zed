@@ -473,6 +473,15 @@ impl Speed {
     }
 }
 
+impl From<Speed> for anthropic::Speed {
+    fn from(speed: Speed) -> Self {
+        match speed {
+            Speed::Standard => anthropic::Speed::Standard,
+            Speed::Fast => anthropic::Speed::Fast,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub struct LanguageModelResponseMessage {
     pub role: Option<Role>,

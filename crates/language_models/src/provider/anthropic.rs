@@ -725,6 +725,7 @@ pub fn into_anthropic(
         metadata: None,
         output_config: None,
         stop_sequences: Vec::new(),
+        speed: request.speed.map(From::from),
         temperature: request.temperature.or(Some(default_temperature)),
         top_k: None,
         top_p: None,
