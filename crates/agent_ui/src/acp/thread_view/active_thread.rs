@@ -2954,17 +2954,22 @@ impl AcpThreadView {
         }
     }
 
-    fn render_fast_mode_control(&self, cx: &mut Context<Self>) -> Option<AnyElement> {
+    fn fast_mode_available(&self, cx: &Context<Self>) -> bool {
         if !cx.is_staff() {
+            return false;
+        }
+        self.as_native_thread(cx)
+            .and_then(|thread| thread.read(cx).model())
+            .map(|model| model.supports_fast_mode())
+            .unwrap_or(false)
+    }
+
+    fn render_fast_mode_control(&self, cx: &mut Context<Self>) -> Option<AnyElement> {
+        if !self.fast_mode_available(cx) {
             return None;
         }
 
         let thread = self.as_native_thread(cx)?.read(cx);
-        let model = thread.model()?;
-
-        if !model.supports_fast_mode() {
-            return None;
-        }
 
         let (tooltip_label, color, icon) = if matches!(thread.speed(), Some(Speed::Fast)) {
             ("Disable Fast Mode", Color::Muted, IconName::FastForward)
@@ -7132,17 +7137,21 @@ impl AcpThreadView {
     }
 
     fn toggle_fast_mode(&mut self, cx: &mut Context<Self>) {
-        if let Some(thread) = self.as_native_thread(cx) {
-            thread.update(cx, |thread, cx| {
-                thread.set_speed(
-                    thread
-                        .speed()
-                        .map(|speed| speed.toggle())
-                        .unwrap_or(Speed::Fast),
-                    cx,
-                );
-            });
+        if !self.fast_mode_available(cx) {
+            return;
         }
+        let Some(thread) = self.as_native_thread(cx) else {
+            return;
+        };
+        thread.update(cx, |thread, cx| {
+            thread.set_speed(
+                thread
+                    .speed()
+                    .map(|speed| speed.toggle())
+                    .unwrap_or(Speed::Fast),
+                cx,
+            );
+        });
     }
 
     fn cycle_thinking_effort(&mut self, cx: &mut Context<Self>) {
